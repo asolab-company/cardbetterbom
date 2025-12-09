@@ -32,12 +32,12 @@ workflows:
 
       - name: Apply provisioning to project
         script: |
-          xcode-project use-profiles --project "Runner.xcodeproj"
+          xcode-project use-profiles --project "Runner.xcworkspace"
 
       - name: Build iOS ipa
         script: |
           xcode-project build-ipa \
-            --project "Runner.xcodeproj" \
+            --project "Runner.xcworkspace" \
             --scheme "Runner" \
             --config Release
 
