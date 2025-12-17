@@ -1,24 +1,29 @@
 workflows:
   ios-workflow:
     name: iOS Workflow
+    max_build_duration: 120
+
     environment:
       xcode: 16.4
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.cardbetterbom.app
+        bundle_identifier: com.bettercardbomshopping.app
       groups:
         - Runner
+
     scripts:
       - name: Sanity check env
         script: |
+          set -e
           test -n "$APP_STORE_CONNECT_ISSUER_ID" || (echo "ISSUER_ID empty" && exit 1)
           test -n "$APP_STORE_CONNECT_KEY_ID" || (echo "KEY_ID empty" && exit 1)
           test -n "$APP_STORE_CONNECT_PRIVATE_KEY" || (echo "PRIVATE_KEY empty" && exit 1)
 
       - name: Fetch signing files
         script: |
+          set -e
           app-store-connect fetch-signing-files \
-            "com.cardbetterbom.app" \
+            "com.bettercardbomshopping.app" \
             --type IOS_APP_STORE \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
             --key-id "$APP_STORE_CONNECT_KEY_ID" \
@@ -27,22 +32,32 @@ workflows:
 
       - name: Setup keychain
         script: |
+          set -e
           keychain initialize
           keychain add-certificates
 
+      - name: Install CocoaPods
+        script: |
+          set -e
+          pod install --repo-update
+
       - name: Apply provisioning to project
         script: |
+          set -e
           xcode-project use-profiles --project "Runner.xcodeproj"
 
       - name: Build iOS ipa
         script: |
+          set -e
           xcode-project build-ipa \
-            --project "Runner.xcworkspace" \
+            --workspace "Runner.xcworkspace" \
             --scheme "Runner" \
             --config Release
 
     artifacts:
       - build/ios/ipa/*.ipa
+      - build/ios/logs/*.log
+      - $HOME/Library/Logs/xcodebuild/*.log
 
     publishing:
       app_store_connect:
