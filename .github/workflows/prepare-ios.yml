@@ -1,0 +1,36 @@
+name: Prepare iOS Project
+
+on:
+  workflow_dispatch:  # ручной запуск из Actions tab
+
+jobs:
+  prepare_ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      
+      - name: Run CocoaPods
+        run: |
+          cd ios
+          pod install
+      
+      - name: Create branch name with date
+        id: branch_name
+        run: |
+          BRANCH_NAME="build-$(date +%d-%m)-ios"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push to new branch
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'ios/'
+          message: 'Generate iOS project with CocoaPods'
+          new_branch: ${{ steps.branch_name.outputs.branch }}
+          push: true
