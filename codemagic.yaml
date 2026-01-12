@@ -7,7 +7,7 @@ workflows:
       xcode: 16.4
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.bettercardbomshopping.app
+        bundle_identifier: com.cardbomshop.app
       groups:
         - Runner
 
@@ -23,7 +23,7 @@ workflows:
         script: |
           set -e
           app-store-connect fetch-signing-files \
-            "com.bettercardbomshopping.app" \
+            "com.cardbomshop.app" \
             --type IOS_APP_STORE \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
             --key-id "$APP_STORE_CONNECT_KEY_ID" \
