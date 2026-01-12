@@ -19,6 +19,12 @@ workflows:
           test -n "$APP_STORE_CONNECT_KEY_ID" || (echo "KEY_ID empty" && exit 1)
           test -n "$APP_STORE_CONNECT_PRIVATE_KEY" || (echo "PRIVATE_KEY empty" && exit 1)
 
+      - name: Flutter pub get
+        script: |
+          set -e
+          flutter --version
+          flutter pub get
+
       - name: Fetch signing files
         script: |
           set -e
@@ -39,18 +45,20 @@ workflows:
       - name: Install CocoaPods
         script: |
           set -e
+          cd ios
           pod install --repo-update
+          cd ..
 
       - name: Apply provisioning to project
         script: |
           set -e
-          xcode-project use-profiles --project "Runner.xcodeproj"
+          xcode-project use-profiles --project "ios/Runner.xcodeproj"
 
       - name: Build iOS ipa
         script: |
           set -e
           xcode-project build-ipa \
-            --workspace "Runner.xcworkspace" \
+            --workspace "ios/Runner.xcworkspace" \
             --scheme "Runner" \
             --config Release
 
