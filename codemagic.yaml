@@ -5,9 +5,12 @@ workflows:
 
     environment:
       xcode: 16.4
+      flutter: 3.38.6
+
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.cardbomshop.app
+
       groups:
         - Runner
 
@@ -35,31 +38,32 @@ workflows:
           set -e
           keychain initialize
           keychain add-certificates
-          
+
       - name: Prepare iOS Flutter configs
         script: |
-         set -e
-         flutter --version
-         flutter pub get
-         flutter precache --ios
-         flutter build ios --debug --no-codesign
+          set -e
+          flutter --version
+          flutter pub get
+          flutter precache --ios
+          flutter build ios --debug --no-codesign
 
       - name: Install CocoaPods
         script: |
           set -e
           cd ios
           pod install --repo-update
+          cd ..
 
       - name: Apply provisioning to project
         script: |
           set -e
-          xcode-project use-profiles --project "Runner.xcodeproj"
+          xcode-project use-profiles --project "ios/Runner.xcodeproj"
 
       - name: Build iOS ipa
         script: |
           set -e
           xcode-project build-ipa \
-            --workspace "Runner.xcworkspace" \
+            --workspace "ios/Runner.xcworkspace" \
             --scheme "Runner" \
             --config Release
 
