@@ -59,6 +59,21 @@ workflows:
           set -e
           xcode-project use-profiles --project "ios/Runner.xcodeproj"
 
+      - name: Increment iOS build number
+        script: |
+          set -e
+          PLIST="ios/Runner/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST" >/dev/null 2>&1 || \
+            (/usr/libexec/PlistBuddy -c "Add CFBundleVersion string 1" "$PLIST")
+
+          CUR=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST")
+
+          if ! [[ "$CUR" =~ ^[0-9]+$ ]]; then CUR=1; fi
+
+          NEXT=$((CUR + 1))
+          /usr/libexec/PlistBuddy -c "Set CFBundleVersion $NEXT" "$PLIST"
+          echo "✅ CFBundleVersion bumped: $CUR -> $NEXT"
+
       - name: Build iOS ipa
         script: |
           set -e
