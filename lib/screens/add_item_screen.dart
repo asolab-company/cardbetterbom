@@ -125,8 +125,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
               onPrimary: AppColors.white,
               surface: AppColors.dark,
               onSurface: AppColors.white,
-            ),
-            dialogBackgroundColor: AppColors.dark,
+            ), dialogTheme: DialogThemeData(backgroundColor: AppColors.dark),
           ),
           child: child!,
         );

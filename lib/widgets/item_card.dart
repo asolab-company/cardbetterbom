@@ -153,8 +153,7 @@ class _PendingItemCardState extends State<PendingItemCard> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(8),
-                    minSize: 0,
-                    onPressed: widget.onBuy,
+                    onPressed: widget.onBuy, minimumSize: Size(0, 0),
                     child: const Text(
                       'BUY',
                       style: TextStyle(
@@ -171,8 +170,7 @@ class _PendingItemCardState extends State<PendingItemCard> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     color: AppColors.accent,
                     borderRadius: BorderRadius.circular(8),
-                    minSize: 0,
-                    onPressed: widget.onSkip,
+                    onPressed: widget.onSkip, minimumSize: Size(0, 0),
                     child: const Text(
                       'SKIP',
                       style: TextStyle(
